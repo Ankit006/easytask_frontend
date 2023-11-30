@@ -6,21 +6,28 @@ import './index.css'
 import Home from '@/screens/Home'
 import Login from "@/screens/Auth/Login";
 import Singup from "@/screens/Auth/Signup";
+import App from './App'
 const queryClient = new QueryClient()
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: <App />,
+    children: [
+      {
+        path: "dashboard",
+        element: <Home />
+      },
+      {
+        path: "login",
+        element: <Login />
+      },
+      {
+        path: "singup",
+        element: <Singup />
+      }
+    ]
   },
-  {
-    path: "/login",
-    element: <Login />
-  },
-  {
-    path: "/singup",
-    element: <Singup />
-  }
 ])
 
 
