@@ -10,14 +10,40 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { LoginFormSchema, LoginFromSchemaType } from "@/validation";
-import { NavLink } from "react-router-dom";
+import { LoginFormSchema, LoginFromValueType } from "@/validation";
+import { NavLink, useNavigate } from "react-router-dom";
 import AuthLayout from "@/components/Auth/AuthLayout";
-
+import { useToast } from "@/components/ui/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import axios, { AxiosError } from "axios";
+import { backendAPI } from "@/constants";
+import { Circles } from "react-loader-spinner"
 
 export default function Login() {
+    const { toast } = useToast();
+    const navigate = useNavigate();
 
-    const form = useForm<LoginFromSchemaType>({
+
+    const mutation = useMutation({
+        mutationFn: (values: LoginFromValueType) => {
+            return axios.post(backendAPI.login, values);
+        },
+        onError: (error: AxiosError) => {
+            const errorMessage = error.response?.data as { error: string }
+            toast({
+                variant: "destructive",
+                title: errorMessage.error,
+            })
+        },
+        onSuccess: () => {
+            toast({
+                title: "Signup successful"
+            })
+            navigate("/")
+        }
+    })
+
+    const form = useForm<LoginFromValueType>({
         resolver: zodResolver(LoginFormSchema),
         defaultValues: {
             email: "",
@@ -25,15 +51,15 @@ export default function Login() {
         },
     });
 
-    function onSubmit(values: LoginFromSchemaType) {
-        console.log(values);
+    function onSubmit(values: LoginFromValueType) {
+        mutation.mutate(values)
     }
 
     return (
         <AuthLayout>
             <div className="mb-8">
                 <h1 className="font-bold text-2xl">Login</h1>
-                <p className="text-sm text-gray-300">
+                <p className="text-sm text-gray-600">
                     Please enter details below to login
                 </p>
             </div>
@@ -66,7 +92,9 @@ export default function Login() {
                             </FormItem>
                         )}
                     />
-                    <Button type="submit" className="w-full">Submit</Button>
+                    <Button disabled={mutation.isPending} type="submit" className="w-full">
+                        {mutation.isPending ? <Circles height={20} width={20} color="#FFFFFF" /> : "Submit"}
+                    </Button>
 
                 </form>
             </Form>

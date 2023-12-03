@@ -5,7 +5,7 @@ export const LoginFormSchema = z.object({
     password: z.string().min(8),
 });
 
-export type LoginFromSchemaType = z.infer<typeof LoginFormSchema>;
+export type LoginFromValueType = z.infer<typeof LoginFormSchema>;
 
 export const SignUpFormValidation = z
     .object({

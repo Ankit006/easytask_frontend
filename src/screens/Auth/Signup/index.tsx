@@ -11,18 +11,36 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SignUpFormValidation, SignupValueType } from "@/validation";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { backendAPI } from "@/constants";
 import { useMutation } from "@tanstack/react-query"
 import AuthLayout from "@/components/Auth/AuthLayout";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { Circles } from "react-loader-spinner"
+import { useToast } from "@/components/ui/use-toast";
 
 
 export default function Signup() {
 
+    const { toast } = useToast()
+    const navigate = useNavigate();
+
     const mutation = useMutation({
         mutationFn: (values: SignupValueType) => {
             return axios.post(backendAPI.signup, values)
+        },
+        onError: (error: AxiosError) => {
+            const errorMessage = error.response?.data as { error: string }
+            toast({
+                variant: "destructive",
+                title: errorMessage.error,
+            })
+        },
+        onSuccess: () => {
+            toast({
+                title: "Signup successful"
+            })
+            navigate("/")
         }
     })
 
@@ -42,6 +60,7 @@ export default function Signup() {
     function onSubmit(values: SignupValueType) {
         mutation.mutate(values)
     }
+
 
     return (
         <AuthLayout>
@@ -149,7 +168,7 @@ export default function Signup() {
                     />
 
                     <Button disabled={mutation.isPending} type="submit" className="w-full">
-                        Submit
+                        {mutation.isPending ? <Circles height={20} width={20} color="#FFFFFF" /> : "Submit"}
                     </Button>
                 </form>
             </Form >
