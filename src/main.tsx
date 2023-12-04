@@ -8,6 +8,7 @@ import Login from "@/screens/Auth/Login";
 import Singup from "@/screens/Auth/Signup";
 import App from './App'
 import axios from 'axios'
+import Companies from './screens/Companies'
 const queryClient = new QueryClient()
 
 axios.defaults.withCredentials = true;
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
       {
         path: "signup",
         element: <Singup />
+      },
+      {
+        path: "companies",
+        element: <Companies />
       }
     ]
   },

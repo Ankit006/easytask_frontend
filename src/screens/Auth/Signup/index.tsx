@@ -40,7 +40,7 @@ export default function Signup() {
             toast({
                 title: "Signup successful"
             })
-            navigate("/")
+            navigate("/companies")
         }
     })
 

@@ -39,7 +39,7 @@ export default function Login() {
             toast({
                 title: "Signup successful"
             })
-            navigate("/")
+            navigate("/companies")
         }
     })
 
