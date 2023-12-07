@@ -9,22 +9,27 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { backendAPI } from "@/constants";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
-import { IMutationValues } from "../types";
+import { CreateCompanyFormDialogProps, IMutationValues } from "../types";
 
 
-export function CreateCompanyFormDialog() {
+export function CreateCompanyFormDialog({ setOpenCompanyFormDialog }: CreateCompanyFormDialogProps) {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [country, setCountry] = useState("");
   const [pinCode, setPinCode] = useState("");
+  const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: (values: IMutationValues) => {
       return axios.post(backendAPI.company, values);
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["companies"] })
+      setOpenCompanyFormDialog(false)
+    }
   });
 
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {

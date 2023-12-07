@@ -14,9 +14,11 @@ import {
 import randomColor from "randomcolor";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { CreateCompanyFormDialog } from "./components";
+import { useState } from "react";
 
 export default function Companies() {
     const { toast } = useToast();
+    const [openCompanyFormDialog, setOpenCompanyFormDialog] = useState(false)
     const { isLoading, isError, error, data } = useQuery<ICompany[], AxiosError>({
         queryKey: ["companies"],
         queryFn: async () => {
@@ -47,8 +49,8 @@ export default function Companies() {
 
     return (
         <div>
-            <div className="center max-w-5xl grid grid-cols-6 gap-3">
-                <Dialog>
+            <div className="center max-w-5xl grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
+                <Dialog open={openCompanyFormDialog} onOpenChange={setOpenCompanyFormDialog}>
                     <DialogTrigger asChild>
                         <div>
                             <TooltipProvider delayDuration={200}>
@@ -67,7 +69,7 @@ export default function Companies() {
                             </TooltipProvider>
                         </div>
                     </DialogTrigger>
-                    <CreateCompanyFormDialog />
+                    <CreateCompanyFormDialog setOpenCompanyFormDialog={setOpenCompanyFormDialog} />
                 </Dialog>
                 {data ? (
                     data.length > 0 &&
