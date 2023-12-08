@@ -7,40 +7,56 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { backendAPI } from "@/constants";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { useState } from "react";
-import { CreateCompanyFormDialogProps, IMutationValues } from "../types";
+import { CreateCompanyFormDialogProps } from "../types";
+import { useForm } from "react-hook-form";
+import { companyFormValidation, CompanyFormValueType } from "../validation";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+export function CreateCompanyFormDialog({
+  setOpenCompanyFormDialog,
+}: CreateCompanyFormDialogProps) {
 
 
-export function CreateCompanyFormDialog({ setOpenCompanyFormDialog }: CreateCompanyFormDialogProps) {
-  const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
-  const [country, setCountry] = useState("");
-  const [pinCode, setPinCode] = useState("");
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: (values: IMutationValues) => {
+    mutationFn: (values: FormData) => {
       return axios.post(backendAPI.company, values);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["companies"] })
-      setOpenCompanyFormDialog(false)
-    }
+      queryClient.invalidateQueries({ queryKey: ["companies"] });
+      setOpenCompanyFormDialog(false);
+    },
   });
 
-  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const postData: IMutationValues = {
-      name,
-      address,
-      country,
-      pinCode,
-    };
-    mutation.mutate(postData);
+  const form = useForm<CompanyFormValueType>({
+    resolver: zodResolver(companyFormValidation),
+    defaultValues: {
+      name: "",
+      address: "",
+      country: "",
+      pinCode: "",
+    },
+  });
+
+  function onSubmit(values: CompanyFormValueType) {
+    const formData = new FormData();
+    type KeyType = keyof CompanyFormValueType;
+    Object.keys(values).forEach((key) => {
+      formData.append(key, values[key as KeyType])
+    })
+    mutation.mutate(formData);
   }
 
   return (
@@ -51,53 +67,69 @@ export function CreateCompanyFormDialog({ setOpenCompanyFormDialog }: CreateComp
           Create your company. Click save when you're done
         </DialogDescription>
       </DialogHeader>
-      <form onSubmit={onSubmit}>
-        <div>
-          <Label htmlFor="name">Company name</Label>
-          <Input
-            autoComplete="on"
-            id="name"
-            value={name}
-            className="w-full"
-            onChange={(e) => setName(e.target.value)}
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col space-y-5">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Company name</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
 
-        <div className="mt-2">
-          <Label htmlFor="address">Address</Label>
-          <Input
-            autoComplete="on"
-            id="address"
-            value={address}
-            className="w-full"
-            onChange={(e) => setAddress(e.target.value)}
+          <FormField
+            control={form.control}
+            name="address"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Address</FormLabel>
+                <FormControl>
+                  <Input {...field} multiple />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-        <div className="mt-2">
-          <Label htmlFor="country">Country</Label>
-          <Input
-            autoComplete="on"
-            id="country"
-            value={country}
-            className="w-full"
-            onChange={(e) => setCountry(e.target.value)}
-          />
-        </div>
 
-        <div className="mt-2">
-          <Label htmlFor="pinCode">Pin code</Label>
-          <Input
-            autoComplete="on"
-            id="pinCode"
-            value={pinCode}
-            className="w-full"
-            onChange={(e) => setPinCode(e.target.value)}
+          <FormField
+            control={form.control}
+            name="country"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Country</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-        <DialogFooter className="mt-4">
-          <Button type="submit">Save</Button>
-        </DialogFooter>
-      </form>
+
+          <FormField
+            control={form.control}
+            name="pinCode"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Pin code</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <DialogFooter className="mt-4">
+            <Button type="submit">Save</Button>
+          </DialogFooter>
+        </form>
+      </Form>
     </DialogContent>
   );
 }

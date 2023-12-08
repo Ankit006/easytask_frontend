@@ -9,7 +9,13 @@ import Singup from "@/screens/Auth/Signup";
 import App from './App'
 import axios from 'axios'
 import Companies from './screens/Companies'
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 20
+    }
+  }
+})
 
 axios.defaults.withCredentials = true;
 
@@ -37,6 +43,8 @@ const router = createBrowserRouter([
     ]
   },
 ])
+
+
 
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
