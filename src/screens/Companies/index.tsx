@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/tooltip";
 import randomColor from "randomcolor";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { CreateCompanyFormDialog } from "./components";
+import { CreateCompanyFormDialog } from "./components/CreateCompanyFormDialog";
 import { useState } from "react";
 
 export default function Companies() {
