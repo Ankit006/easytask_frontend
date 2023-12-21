@@ -1,3 +1,8 @@
+interface ImageType {
+  fileId: string;
+  url: string;
+}
+
 export interface ICompany {
   _id: string;
   name: string;
@@ -6,4 +11,5 @@ export interface ICompany {
   pinCode: string;
   adminId: string;
   members: string[];
+  logo: ImageType | null;
 }

@@ -39,7 +39,7 @@ export default function Login() {
             toast({
                 title: "Signup successful"
             })
-            navigate("/companies")
+            navigate("/")
         }
     })
 
@@ -100,7 +100,7 @@ export default function Login() {
             </Form>
             <p className="text-sm mt-4 text-center">
                 Don't have an account ? {" "}
-                <NavLink to={"/signup"} className="text-primary font-semibold">
+                <NavLink to={"/register"} className="text-primary font-semibold">
                     Register
                 </NavLink>
             </p>

@@ -11,14 +11,18 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import randomColor from "randomcolor";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { CreateCompanyFormDialog } from "./components/CreateCompanyFormDialog";
 import { useState } from "react";
+import randomColor from "randomcolor";
+import { resizeImage } from "@/lib/utils";
+import Center from "@/components/global/Center";
+import { Toaster } from "@/components/ui/toaster"
+import { NavLink } from "react-router-dom";
 
 export default function Companies() {
     const { toast } = useToast();
-    const [openCompanyFormDialog, setOpenCompanyFormDialog] = useState(false)
+    const [openCompanyFormDialog, setOpenCompanyFormDialog] = useState(false);
     const { isLoading, isError, error, data } = useQuery<ICompany[], AxiosError>({
         queryKey: ["companies"],
         queryFn: async () => {
@@ -50,7 +54,10 @@ export default function Companies() {
     return (
         <div>
             <div className="center max-w-5xl grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
-                <Dialog open={openCompanyFormDialog} onOpenChange={setOpenCompanyFormDialog}>
+                <Dialog
+                    open={openCompanyFormDialog}
+                    onOpenChange={setOpenCompanyFormDialog}
+                >
                     <DialogTrigger asChild>
                         <div>
                             <TooltipProvider delayDuration={200}>
@@ -69,34 +76,43 @@ export default function Companies() {
                             </TooltipProvider>
                         </div>
                     </DialogTrigger>
-                    <CreateCompanyFormDialog setOpenCompanyFormDialog={setOpenCompanyFormDialog} />
+                    <CreateCompanyFormDialog
+                        setOpenCompanyFormDialog={setOpenCompanyFormDialog}
+                    />
                 </Dialog>
-                {data ? (
-                    data.length > 0 &&
-                    data.map((company) => (
-                        <TooltipProvider delayDuration={200} key={company._id}>
-                            <Tooltip>
-                                <TooltipTrigger>
-                                    <div
-                                        className="w-16 h-16 rounded-full relative"
-                                        key={company._id}
-                                        style={{ backgroundColor: randomColor() }}
-                                    >
-                                        <p className=" center text-lg font-semibold text-white">
-                                            {company.name[0]}
-                                        </p>
-                                    </div>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>{company.name}</p>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
-                    ))
-                ) : (
-                    <></>
-                )}
+                <div>
+                    {data ? (
+                        data.length > 0 &&
+                        data.map((company) => (
+                            <NavLink key={company._id} to={`/dashboard/${company._id}`}>
+                                <TooltipProvider delayDuration={200} >
+                                    <Tooltip>
+                                        <TooltipTrigger>
+                                            {company.logo ? <img
+                                                src={resizeImage(company.logo.url, 100, 100)}
+                                                alt={company.name}
+                                                height={60}
+                                                width={60}
+                                                className="rounded-full object-contain"
+                                            /> : <div className={`w-16 h-16 rounded-full relative`} style={{ backgroundColor: randomColor() }}>
+                                                <Center>
+                                                    <span className="text-lg font-semibold capitalize">{company.name[0]}</span>
+                                                </Center>
+                                            </div>}
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>{company.name}</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+                            </NavLink>
+                        ))
+                    ) : (
+                        <></>
+                    )}
+                </div>
             </div>
+            <Toaster />
         </div>
     );
 }

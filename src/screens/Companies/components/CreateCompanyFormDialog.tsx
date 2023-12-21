@@ -4,7 +4,7 @@ import {
     DialogDescription,
     DialogFooter,
     DialogHeader,
-    DialogTitle
+    DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
@@ -13,30 +13,47 @@ import {
     FormField,
     FormItem,
     FormLabel,
-    FormMessage
+    FormMessage,
 } from "@/components/ui/form";
 import { backendAPI } from "@/constants";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { CreateCompanyFormDialogProps } from "../types";
 import { useForm } from "react-hook-form";
 import { companyFormValidation, CompanyFormValueType } from "../validation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Circles } from "react-loader-spinner";
+import { useToast } from "@/components/ui/use-toast"
+
+
 
 
 export function CreateCompanyFormDialog({
     setOpenCompanyFormDialog,
 }: CreateCompanyFormDialogProps) {
+
     const queryClient = useQueryClient();
+    const { toast } = useToast()
+
 
     const mutation = useMutation({
         mutationFn: (values: FormData | object) => {
             return axios.post(backendAPI.company, values);
         },
         onSuccess: () => {
+            toast({
+                title: "Company is created"
+            })
             queryClient.invalidateQueries({ queryKey: ["companies"] });
-            // setOpenCompanyFormDialog(false);
+            setOpenCompanyFormDialog(false);
         },
+        onError: (error: AxiosError) => {
+            const errorMessage = error.response?.data as { error: string };
+            toast({
+                variant: "destructive",
+                title: errorMessage.error,
+            })
+        }
     });
 
     const form = useForm<CompanyFormValueType>({
@@ -83,11 +100,17 @@ export function CreateCompanyFormDialog({
                                     <Input
                                         type="file"
                                         accept=".jpg, .jpeg, .png, .webp"
-                                        onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : undefined)} />
+                                        onChange={(e) =>
+                                            field.onChange(
+                                                e.target.files ? e.target.files[0] : undefined
+                                            )
+                                        }
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
-                        )} />
+                        )}
+                    />
                     <FormField
                         control={form.control}
                         name="name"
@@ -99,7 +122,8 @@ export function CreateCompanyFormDialog({
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
-                        )} />
+                        )}
+                    />
 
                     <FormField
                         control={form.control}
@@ -112,7 +136,8 @@ export function CreateCompanyFormDialog({
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
-                        )} />
+                        )}
+                    />
 
                     <FormField
                         control={form.control}
@@ -125,7 +150,8 @@ export function CreateCompanyFormDialog({
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
-                        )} />
+                        )}
+                    />
 
                     <FormField
                         control={form.control}
@@ -138,10 +164,17 @@ export function CreateCompanyFormDialog({
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
-                        )} />
+                        )}
+                    />
 
                     <DialogFooter className="mt-4">
-                        <Button type="submit">Save</Button>
+                        <Button type="submit" disabled={mutation.isPending}>
+                            {mutation.isPending ? (
+                                <Circles height={20} width={20} color="#FFFFFF" />
+                            ) : (
+                                "Save"
+                            )}
+                        </Button>
                     </DialogFooter>
                 </form>
             </Form>

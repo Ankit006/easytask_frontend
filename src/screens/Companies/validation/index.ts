@@ -23,7 +23,7 @@ export const companyFormValidation = z.object({
   companyLogo: z
     .instanceof(File)
     .refine((f) => f.size < 2000000, {
-      message: "Max image size is 5MB",
+      message: "Max image size is 2MB",
     })
     .refine((f) => ACCEPTED_IMAGE_TYPE.includes(f.type), {
       message: "Only .jpg, .jpeg, .png and .webp formats are supported.",

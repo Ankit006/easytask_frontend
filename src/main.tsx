@@ -3,12 +3,11 @@ import ReactDOM from 'react-dom/client'
 import { RouterProvider, createBrowserRouter } from "react-router-dom"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import './index.css'
-import Home from '@/screens/Home'
 import Login from "@/screens/Auth/Login";
-import Singup from "@/screens/Auth/Signup";
-import App from './App'
 import axios from 'axios'
 import Companies from './screens/Companies'
+import Signup from '@/screens/Auth/Signup'
+import Dashboard from './screens/Dashboard'
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -22,26 +21,20 @@ axios.defaults.withCredentials = true;
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
-    children: [
-      {
-        path: "dashboard",
-        element: <Home />
-      },
-      {
-        path: "login",
-        element: <Login />
-      },
-      {
-        path: "signup",
-        element: <Singup />
-      },
-      {
-        path: "companies",
-        element: <Companies />
-      }
-    ]
+    element: <Companies />,
   },
+  {
+    path: "/login",
+    element: <Login />
+  },
+  {
+    path: "/register",
+    element: <Signup />
+  },
+  {
+    path: "/dashboard/:companyId",
+    element: <Dashboard />
+  }
 ])
 
 

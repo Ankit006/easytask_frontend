@@ -19,7 +19,6 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { Circles } from "react-loader-spinner"
 import { useToast } from "@/components/ui/use-toast";
 
-
 export default function Signup() {
 
     const { toast } = useToast()
@@ -40,7 +39,7 @@ export default function Signup() {
             toast({
                 title: "Signup successful"
             })
-            navigate("/companies")
+            navigate("/")
         }
     })
 
