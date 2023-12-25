@@ -13,3 +13,17 @@ export interface ICompany {
   members: string[];
   logo: ImageType | null;
 }
+
+export interface IUser {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  age: string;
+  email: string;
+  phoneNumber: string;
+  isActive: boolean;
+}
+
+export interface IHeader extends IUser {
+  role: "Admin" | "Member";
+}

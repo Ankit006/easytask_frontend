@@ -8,6 +8,7 @@ import axios from 'axios'
 import Companies from './screens/Companies'
 import Signup from '@/screens/Auth/Signup'
 import Dashboard from './screens/Dashboard'
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -17,6 +18,7 @@ const queryClient = new QueryClient({
 })
 
 axios.defaults.withCredentials = true;
+axios.defaults.baseURL = "http://localhost:5000"
 
 const router = createBrowserRouter([
   {
