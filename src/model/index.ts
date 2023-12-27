@@ -22,6 +22,7 @@ export interface IUser {
   email: string;
   phoneNumber: string;
   isActive: boolean;
+  profilePic: ImageType | null;
 }
 
 export interface IHeader extends IUser {

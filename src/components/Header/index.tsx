@@ -1,25 +1,33 @@
 import { backendAPI } from "@/constants";
 import { IHeader } from "@/model";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { useParams } from "react-router-dom";
+import axios, { AxiosError } from "axios";
+import { useNavigate, useParams } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Popover, PopoverTrigger } from "@/components/ui/popover";
 import placeholderProfileImg from "/placeholder-profile.svg";
-import ProfileMenu from "./ProfileMenu";
+import ProfileMenu from "./components/ProfileMenu";
 import { IoMenuOutline } from "react-icons/io5";
 import Center from "../global/Center";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import {
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet";
 import { MdDashboard } from "react-icons/md";
 import { FaProjectDiagram } from "react-icons/fa";
 import { IoMdChatbubbles } from "react-icons/io";
 import React from "react";
-
+import { resizeImage } from "@/lib/utils";
+import NavButtton from "./components/NavButtton";
 
 export default function Header() {
-    const { companyId } = useParams();
-    const { data, isLoading, } = useQuery<IHeader>({
+    const { companyId, tab } = useParams();
+    const navigate = useNavigate();
+    const { data, isLoading } = useQuery<IHeader, AxiosError<{ error: string }>>({
         queryKey: ["header", companyId],
         staleTime: Infinity,
         enabled: !!companyId,
@@ -27,18 +35,43 @@ export default function Header() {
             axios.get(backendAPI.header(companyId)).then((res) => res.data),
     });
 
+    function onNavPressend(tab: string) {
+        navigate(`/dashboard/${companyId}/${tab}`);
+    }
+
     return (
         <div className=" py-4 border-b border-gray-300 bg-white/30 backdrop-blur-3xl">
             <div className="container mx-auto flex items-center justify-between">
                 <nav className="md:block hidden">
-                    <ul className="text-xs text-gray-600 flex items-center space-x-4">
-                        <li>Members</li>
-                        <li>Projects</li>
-                        <li>Chats</li>
+                    <ul className="text-sm text-gray-600 flex items-center space-x-4">
+                        <li>
+                            <NavButtton
+                                highlight={tab === "members"}
+                                onPressed={() => onNavPressend("members")}
+                            >
+                                <span>Members</span>
+                            </NavButtton>
+                        </li>
+                        <li>
+                            <NavButtton
+                                highlight={tab === "projects"}
+                                onPressed={() => onNavPressend("projects")}
+                            >
+                                <span>Projects</span>
+                            </NavButtton>
+                        </li>
+                        <li>
+                            <NavButtton
+                                highlight={tab === "chats"}
+                                onPressed={() => onNavPressend("chats")}
+                            >
+                                <span>Chats</span>
+                            </NavButtton>
+                        </li>
                     </ul>
                 </nav>
                 <div className="md:hidden block">
-                    <Sheet >
+                    <Sheet>
                         <SheetTrigger className=" border border-gray-500 rounded-lg w-8 h-8 text-lg relative">
                             <Center>
                                 <IoMenuOutline />
@@ -65,17 +98,20 @@ export default function Header() {
                         </SheetContent>
                     </Sheet>
                 </div>
-                {isLoading ? (
-                    <Skeleton className="w-16 h-16 rounded-full" />
-                ) : (
+                {isLoading && <Skeleton className="w-10 h-10 rounded-full" />}
+                {data && (
                     <Popover>
                         <PopoverTrigger>
-                            <Avatar>
+                            <Avatar className=" w-10 h-10">
                                 <AvatarImage
-                                    src={placeholderProfileImg}
-                                    alt={data?.firstName}
+                                    src={
+                                        data.profilePic
+                                            ? resizeImage(data.profilePic.url, 80, 80)
+                                            : placeholderProfileImg
+                                    }
+                                    alt={data.firstName}
                                 />
-                                <AvatarFallback>{data?.firstName}</AvatarFallback>
+                                <AvatarFallback>{data.firstName}</AvatarFallback>
                             </Avatar>
                         </PopoverTrigger>
                         {data && <ProfileMenu header={data} />}
@@ -86,10 +122,10 @@ export default function Header() {
     );
 }
 
-
-
 function SideBarButton({ children }: { children: React.ReactNode }) {
-    return <div className="flex items-center space-x-2 hover:bg-gray-100 py-1 px-2 rounded w-full">
-        {children}
-    </div>
+    return (
+        <div className="flex items-center space-x-2 hover:bg-gray-100 py-1 px-2 rounded w-full">
+            {children}
+        </div>
+    );
 }

@@ -1,8 +1,7 @@
-import { useToast } from "@/components/ui/use-toast";
 import { backendAPI } from "@/constants";
 import { ICompany } from "@/model";
 import { useQuery } from "@tanstack/react-query";
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, HttpStatusCode } from "axios";
 import { Circles } from "react-loader-spinner";
 import { FaPlus } from "react-icons/fa";
 import {
@@ -14,14 +13,11 @@ import {
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { CreateCompanyFormDialog } from "./components/CreateCompanyFormDialog";
 import { useState } from "react";
-import randomColor from "randomcolor";
-import { resizeImage } from "@/lib/utils";
 import Center from "@/components/global/Center";
 import { Toaster } from "@/components/ui/toaster"
-import { NavLink } from "react-router-dom";
+import CompanyList from "./components/CompanyList";
 
 export default function Companies() {
-    const { toast } = useToast();
     const [openCompanyFormDialog, setOpenCompanyFormDialog] = useState(false);
     const { isLoading, isError, error, data } = useQuery<ICompany[], AxiosError>({
         queryKey: ["companies"],
@@ -45,10 +41,10 @@ export default function Companies() {
     }
     if (isError) {
         const errorMessage = error.response?.data as { error: string };
-        toast({
-            variant: "destructive",
-            title: errorMessage.error,
-        });
+        if (error.status === HttpStatusCode.Unauthorized) {
+            throw new Error("Unauthorized")
+        }
+        return <Center><span className="capitalize text-red-600">{errorMessage.error}</span></Center>
     }
 
     return (
@@ -82,31 +78,7 @@ export default function Companies() {
                 </Dialog>
                 <div>
                     {data ? (
-                        data.length > 0 &&
-                        data.map((company) => (
-                            <NavLink key={company._id} to={`/dashboard/${company._id}`}>
-                                <TooltipProvider delayDuration={200} >
-                                    <Tooltip>
-                                        <TooltipTrigger>
-                                            {company.logo ? <img
-                                                src={resizeImage(company.logo.url, 100, 100)}
-                                                alt={company.name}
-                                                height={60}
-                                                width={60}
-                                                className="rounded-full object-contain"
-                                            /> : <div className={`w-16 h-16 rounded-full relative`} style={{ backgroundColor: randomColor() }}>
-                                                <Center>
-                                                    <span className="text-lg font-semibold capitalize">{company.name[0]}</span>
-                                                </Center>
-                                            </div>}
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                            <p>{company.name}</p>
-                                        </TooltipContent>
-                                    </Tooltip>
-                                </TooltipProvider>
-                            </NavLink>
-                        ))
+                        <CompanyList companyList={data} />
                     ) : (
                         <></>
                     )}
