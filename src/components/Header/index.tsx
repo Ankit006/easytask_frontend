@@ -22,12 +22,16 @@ import { FaProjectDiagram } from "react-icons/fa";
 import { IoMdChatbubbles } from "react-icons/io";
 import React from "react";
 import { resizeImage } from "@/lib/utils";
-import NavButtton from "./components/NavButtton";
+import { Toggle } from "../ui/toggle";
+import useSecurePage from "@/hooks/useSecurePage";
 
 export default function Header() {
     const { companyId, tab } = useParams();
     const navigate = useNavigate();
-    const { data, isLoading } = useQuery<IHeader, AxiosError<{ error: string }>>({
+    const { data, isLoading, isError, error } = useQuery<
+        IHeader,
+        AxiosError<{ error: string }>
+    >({
         queryKey: ["header", companyId],
         staleTime: Infinity,
         enabled: !!companyId,
@@ -35,38 +39,52 @@ export default function Header() {
             axios.get(backendAPI.header(companyId)).then((res) => res.data),
     });
 
+    useSecurePage({ error, isError })
+
+
+    if (isError) {
+        return (
+            <div className=" py-4 border-b border-gray-300 bg-red-200 text-red-600">
+                <p className="text-center">{error.response?.data.error}</p>
+            </div>
+        );
+    }
+
     function onNavPressend(tab: string) {
         navigate(`/dashboard/${companyId}/${tab}`);
     }
 
     return (
-        <div className=" py-4 border-b border-gray-300 bg-white/30 backdrop-blur-3xl">
+        <div className=" py-4 border-b border-gray-300">
             <div className="container mx-auto flex items-center justify-between">
                 <nav className="md:block hidden">
                     <ul className="text-sm text-gray-600 flex items-center space-x-4">
                         <li>
-                            <NavButtton
-                                highlight={tab === "members"}
-                                onPressed={() => onNavPressend("members")}
+                            <Toggle
+                                pressed={tab === "members"}
+                                onPressedChange={() => onNavPressend("members")}
+                                className="data-[state=on]:bg-violet-200 data-[state=on]:text-violet-700"
                             >
-                                <span>Members</span>
-                            </NavButtton>
+                                Members
+                            </Toggle>
                         </li>
                         <li>
-                            <NavButtton
-                                highlight={tab === "projects"}
-                                onPressed={() => onNavPressend("projects")}
+                            <Toggle
+                                pressed={tab === "projects"}
+                                onPressedChange={() => onNavPressend("projects")}
+                                className="data-[state=on]:bg-violet-200 data-[state=on]:text-violet-700"
                             >
-                                <span>Projects</span>
-                            </NavButtton>
+                                Projects
+                            </Toggle>
                         </li>
                         <li>
-                            <NavButtton
-                                highlight={tab === "chats"}
-                                onPressed={() => onNavPressend("chats")}
+                            <Toggle
+                                pressed={tab === "chats"}
+                                onPressedChange={() => onNavPressend("chats")}
+                                className="data-[state=on]:bg-violet-200 data-[state=on]:text-violet-700"
                             >
-                                <span>Chats</span>
-                            </NavButtton>
+                                Chats
+                            </Toggle>
                         </li>
                     </ul>
                 </nav>

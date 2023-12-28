@@ -3,10 +3,10 @@ import { IHeader } from "@/model"
 import { Separator } from "@/components/ui/separator"
 export default function ProfileMenu({ header }: { header: IHeader }) {
     return (
-        <PopoverContent align="end" className="w-48 text-[11px] shadow-sm py-2 overflow-hidden px-0">
+        <PopoverContent align="end" className="w-48 text-sm shadow-sm py-2 overflow-hidden px-0">
             <div className="px-2">
                 <p className=" capitalize font-semibold">{header.firstName}{" "} {header.lastName}</p>
-                <p className=" text-gray-600  break-words">{header.email}</p>
+                <p className=" text-gray-600  break-words text-xs">{header.email}</p>
             </div>
             <Separator className="my-2" />
             <div>

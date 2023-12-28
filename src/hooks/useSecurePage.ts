@@ -1,18 +1,23 @@
-import { useAppSelector } from "@/store/store";
+import { AxiosError, HttpStatusCode } from "axios";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { setIsLoggedin } from "@/store/slices/AuthSlice";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
+interface IProps {
+  error: AxiosError<{ error: string }> | null;
+  isError: boolean;
+}
 
-export default function useSecurePage() {
-  const { isLoggedin } = useAppSelector((state) => state.auth);
+export default function useSecurePage({ error, isError }: IProps) {
+  const location = useLocation();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const queryClient = useQueryClient();
   useEffect(() => {
-    if (!isLoggedin) {
-      navigate("/login");
+    if (
+      error !== null &&
+      error.response?.status === HttpStatusCode.Unauthorized
+    ) {
+      queryClient.clear();
+      navigate(`/login?redirect_url=${location.pathname}`);
     }
-  }, [isLoggedin, navigate]);
-
-  return { dispatch, setIsLoggedin, isLoggedin };
+  }, [isError, navigate, error, location, queryClient]);
 }

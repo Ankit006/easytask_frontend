@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { LoginFormSchema, LoginFromValueType } from "@/validation";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import AuthLayout from "@/components/Auth/AuthLayout";
 import { useToast } from "@/components/ui/use-toast";
 import { useMutation } from "@tanstack/react-query";
@@ -22,6 +22,7 @@ import { Circles } from "react-loader-spinner"
 export default function Login() {
     const { toast } = useToast();
     const navigate = useNavigate();
+    const [searchParam] = useSearchParams()
 
 
     const mutation = useMutation({
@@ -39,7 +40,12 @@ export default function Login() {
             toast({
                 title: "Signup successful"
             })
-            navigate("/")
+            const redirectUrl = searchParam.get("redirect_url");
+            if (redirectUrl) {
+                navigate(redirectUrl);
+            } else {
+                navigate("/")
+            }
         }
     })
 
