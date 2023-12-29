@@ -1,7 +1,7 @@
 import { PopoverContent } from "@/components/ui/popover"
-import { IHeader } from "@/model"
 import { Separator } from "@/components/ui/separator"
-export default function ProfileMenu({ header }: { header: IHeader }) {
+import { ICompanyMember } from "@/model"
+export default function ProfileMenu({ header }: { header: ICompanyMember }) {
     return (
         <PopoverContent align="end" className="w-48 text-sm shadow-sm py-2 overflow-hidden px-0">
             <div className="px-2">
