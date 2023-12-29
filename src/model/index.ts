@@ -25,6 +25,6 @@ export interface IUser {
   profilePic: ImageType | null;
 }
 
-export interface IHeader extends IUser {
+export interface ICompanyMember extends IUser {
   role: "Admin" | "Member";
 }

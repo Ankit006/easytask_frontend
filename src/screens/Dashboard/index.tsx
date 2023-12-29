@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import { useParams } from "react-router-dom";
 import Members from "../Members";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function Dashboard() {
     const { tab } = useParams();
@@ -8,6 +9,7 @@ export default function Dashboard() {
         <div>
             <Header />
             {tab === "members" && <Members />}
+            <Toaster />
         </div>
     )
 }

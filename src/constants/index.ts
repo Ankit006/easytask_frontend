@@ -5,4 +5,7 @@ export const backendAPI = {
   header: (companyId: string | undefined) => {
     return `${backendAPI.company}/${companyId}/header`;
   },
+  searchUsers: (companyId: string | undefined) => {
+    return `${backendAPI.company}/${companyId}/users`;
+  },
 };

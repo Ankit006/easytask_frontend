@@ -1,5 +1,5 @@
 import { backendAPI } from "@/constants";
-import { IHeader } from "@/model";
+import { ICompanyMember } from "@/model";
 import { useQuery } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { useNavigate, useParams } from "react-router-dom";
@@ -29,7 +29,7 @@ export default function Header() {
     const { companyId, tab } = useParams();
     const navigate = useNavigate();
     const { data, isLoading, isError, error } = useQuery<
-        IHeader,
+        ICompanyMember,
         AxiosError<{ error: string }>
     >({
         queryKey: ["header", companyId],
