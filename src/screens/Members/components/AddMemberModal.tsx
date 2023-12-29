@@ -51,7 +51,7 @@ export default function AddMemberModal() {
         } catch (err) {
             setFetchingUser(false)
             const axiosErr = err as AxiosError<{ error: string }>;
-            if (axiosErr.status === HttpStatusCode.Unauthorized) {
+            if (axiosErr.response?.status === HttpStatusCode.Unauthorized) {
                 setError({
                     isError: true,
                     error: axiosErr
