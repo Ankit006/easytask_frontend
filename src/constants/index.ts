@@ -9,3 +9,5 @@ export const backendAPI = {
     return `${backendAPI.company}/${companyId}/users`;
   },
 };
+
+export const backendUrl = "http://localhost:5000";

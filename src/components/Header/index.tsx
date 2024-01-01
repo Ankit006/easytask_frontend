@@ -1,15 +1,5 @@
-import { backendAPI } from "@/constants";
-import { ICompanyMember } from "@/model";
-import { useQuery } from "@tanstack/react-query";
-import axios, { AxiosError } from "axios";
-import { useNavigate, useParams } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Popover, PopoverTrigger } from "@/components/ui/popover";
-import placeholderProfileImg from "/placeholder-profile.svg";
-import ProfileMenu from "./components/ProfileMenu";
-import { IoMenuOutline } from "react-icons/io5";
-import Center from "../global/Center";
 import {
     Sheet,
     SheetContent,
@@ -17,27 +7,26 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
-import { MdDashboard } from "react-icons/md";
+import { Skeleton } from "@/components/ui/skeleton";
+import useFetchMemberInfo from "@/hooks/useFetchMemberInfo";
+import useSecurePage from "@/hooks/useSecurePage";
+import { resizeImage } from "@/lib/utils";
+import React from "react";
 import { FaProjectDiagram } from "react-icons/fa";
 import { IoMdChatbubbles } from "react-icons/io";
-import React from "react";
-import { resizeImage } from "@/lib/utils";
+import { IoMenuOutline } from "react-icons/io5";
+import { MdDashboard } from "react-icons/md";
+import { useNavigate, useParams } from "react-router-dom";
+import Center from "../global/Center";
 import { Toggle } from "../ui/toggle";
-import useSecurePage from "@/hooks/useSecurePage";
+import ProfileMenu from "./components/ProfileMenu";
+import placeholderProfileImg from "/placeholder-profile.svg";
+
 
 export default function Header() {
     const { companyId, tab } = useParams();
     const navigate = useNavigate();
-    const { data, isLoading, isError, error } = useQuery<
-        ICompanyMember,
-        AxiosError<{ error: string }>
-    >({
-        queryKey: ["header", companyId],
-        staleTime: Infinity,
-        enabled: !!companyId,
-        queryFn: () =>
-            axios.get(backendAPI.header(companyId)).then((res) => res.data),
-    });
+    const { data, isLoading, isError, error } = useFetchMemberInfo()
 
     useSecurePage({ error, isError })
 

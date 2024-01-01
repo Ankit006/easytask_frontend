@@ -11,6 +11,9 @@ import Dashboard from './screens/Dashboard'
 import ErrorPage from './screens/Error'
 import { Provider } from "react-redux"
 import { store } from './store/store'
+
+
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

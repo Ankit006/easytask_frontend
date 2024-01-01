@@ -11,11 +11,14 @@ import { Input } from "@/components/ui/input";
 import { QueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import axios, { AxiosError, HttpStatusCode } from "axios";
-import { IUser } from "@/model";
+import { ISearchedUser } from "@/model";
 import { useToast } from "@/components/ui/use-toast";
 import { backendAPI } from "@/constants";
 import useSecurePage from "@/hooks/useSecurePage";
 import { Oval } from "react-loader-spinner";
+import SearchedUserCard from "./SearchedUserCard";
+
+
 export default function AddMemberModal() {
     const queryClient = new QueryClient();
     const { companyId } = useParams();
@@ -26,7 +29,7 @@ export default function AddMemberModal() {
         isError: false,
         error: {} as AxiosError<{ error: string }>
     });
-    const [user, setUser] = useState<IUser & { isMember: boolean } | undefined>()
+    const [user, setUser] = useState<ISearchedUser | undefined>()
     const [fetchingUser, setFetchingUser] = useState(false)
 
     useSecurePage({
@@ -71,38 +74,44 @@ export default function AddMemberModal() {
                 <FaPlus />
                 <span className="ml-1">Add Member</span>
             </Button>
-            <Dialog
-                open={showAddMemberDialog}
-                onOpenChange={() => setShowAddMemberDialog(false)}
-            >
-                <DialogContent className="max-h-[500px] overflow-y-auto">
-                    <DialogHeader>
-                        <DialogTitle>Add Member</DialogTitle>
-                    </DialogHeader>
-                    <form onSubmit={fetchEmail}>
-                        <div className="flex items-center space-x-2">
-                            <Input
-                                type="email"
-                                placeholder="Search by email"
-                                value={searchText}
-                                onChange={(e) => setSearchText(e.target.value)}
-                                name="email"
-                                autoComplete="email"
-                                required
-                            />
-                            <Button className="w-20" type="submit" variant={"secondary"} disabled={fetchingUser}>
-                                {!fetchingUser ? "Search" : <Oval
-                                    visible={true}
-                                    height={30}
-                                    width={30}
-                                    color="#884dee"
-                                    secondaryColor="##a78bfa"
-                                />}
-                            </Button>
-                        </div>
-                    </form>
-                </DialogContent>
-            </Dialog>
+            <div>
+                <Dialog
+                    open={showAddMemberDialog}
+                    onOpenChange={() => {
+                        setUser(undefined)
+                        setShowAddMemberDialog(false)
+                    }}
+                >
+                    <DialogContent className="max-h-[500px] overflow-y-auto">
+                        <DialogHeader>
+                            <DialogTitle>Add Member</DialogTitle>
+                        </DialogHeader>
+                        <form onSubmit={fetchEmail}>
+                            <div className="flex items-center space-x-2">
+                                <Input
+                                    type="email"
+                                    placeholder="Search by email"
+                                    value={searchText}
+                                    onChange={(e) => setSearchText(e.target.value)}
+                                    name="email"
+                                    autoComplete="email"
+                                    required
+                                />
+                                <Button className="w-20" type="submit" variant={"secondary"} disabled={fetchingUser}>
+                                    {!fetchingUser ? "Search" : <Oval
+                                        visible={true}
+                                        height={30}
+                                        width={30}
+                                        color="#884dee"
+                                        secondaryColor="##a78bfa"
+                                    />}
+                                </Button>
+                            </div>
+                        </form>
+                        {user && <SearchedUserCard user={user} />}
+                    </DialogContent>
+                </Dialog>
+            </div>
         </div>
     );
 }

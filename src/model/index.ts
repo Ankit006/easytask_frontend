@@ -28,3 +28,7 @@ export interface IUser {
 export interface ICompanyMember extends IUser {
   role: "Admin" | "Member";
 }
+
+export interface ISearchedUser extends IUser {
+  isMember: boolean;
+}
