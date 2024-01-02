@@ -1,21 +1,23 @@
-import { backendAPI } from "@/constants";
-import { ICompany } from "@/model";
-import { useQuery } from "@tanstack/react-query";
-import axios, { AxiosError, HttpStatusCode } from "axios";
-import { Circles } from "react-loader-spinner";
-import { FaPlus } from "react-icons/fa";
+import Center from "@/components/global/Center";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Toaster } from "@/components/ui/toaster";
 import {
     Tooltip,
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { CreateCompanyFormDialog } from "./components/CreateCompanyFormDialog";
-import { useState } from "react";
-import Center from "@/components/global/Center";
-import { Toaster } from "@/components/ui/toaster"
+import { backendAPI } from "@/constants";
+import { ICompany } from "@/model";
+import { useQuery } from "@tanstack/react-query";
+import axios, { AxiosError, HttpStatusCode } from "axios";
+import { useEffect, useState } from "react";
+import { FaPlus } from "react-icons/fa";
+import { Circles } from "react-loader-spinner";
 import CompanyList from "./components/CompanyList";
+import { CreateCompanyFormDialog } from "./components/CreateCompanyFormDialog";
+import useFetchUser from "@/hooks/useFetchUser";
+import { socket } from "@/lib/utils";
 
 export default function Companies() {
     const [openCompanyFormDialog, setOpenCompanyFormDialog] = useState(false);
@@ -26,6 +28,22 @@ export default function Companies() {
             return res.data;
         },
     });
+
+    const { data: user } = useFetchUser();
+
+    useEffect(() => {
+        if (user) {
+            socket.auth = { userId: user._id };
+            socket.on(`notification`, (args) => {
+                console.log(args)
+            })
+            socket.connect()
+        }
+        return () => {
+            socket.off(`notification`)
+            socket.disconnect()
+        }
+    }, [user])
 
     if (isLoading) {
         return (

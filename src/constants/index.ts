@@ -2,11 +2,15 @@ export const backendAPI = {
   signup: `/auth/signup`,
   login: `/auth/signin`,
   company: `/company`,
+  user: "/user",
   header: (companyId: string | undefined) => {
     return `${backendAPI.company}/${companyId}/header`;
   },
   searchUsers: (companyId: string | undefined) => {
     return `${backendAPI.company}/${companyId}/users`;
+  },
+  sendJoinRequest: (companyId: string | undefined) => {
+    return `${backendAPI.company}/${companyId}/users/request`;
   },
 };
 
