@@ -32,3 +32,17 @@ export interface ICompanyMember extends IUser {
 export interface ISearchedUser extends IUser {
   isMember: boolean;
 }
+
+export interface IJoinRequestNotification {
+  _id: string;
+  type: "JOIN_REQUEST";
+  companyDetail: {
+    companyLogo: null | ImageType;
+    companyName: string;
+  };
+  buttonAction: {
+    accept: string;
+    cancel: string;
+  };
+  timestamp: string;
+}

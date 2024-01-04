@@ -18,6 +18,7 @@ import CompanyList from "./components/CompanyList";
 import { CreateCompanyFormDialog } from "./components/CreateCompanyFormDialog";
 import useFetchUser from "@/hooks/useFetchUser";
 import { socket } from "@/lib/utils";
+import CompanyHeader from "./components/CompanyHeader";
 
 export default function Companies() {
     const [openCompanyFormDialog, setOpenCompanyFormDialog] = useState(false);
@@ -67,6 +68,7 @@ export default function Companies() {
 
     return (
         <div>
+            <CompanyHeader />
             <div className="center max-w-5xl grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
                 <Dialog
                     open={openCompanyFormDialog}

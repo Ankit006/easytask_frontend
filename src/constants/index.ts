@@ -3,6 +3,7 @@ export const backendAPI = {
   login: `/auth/signin`,
   company: `/company`,
   user: "/user",
+  notifications: "/user/notifications",
   header: (companyId: string | undefined) => {
     return `${backendAPI.company}/${companyId}/header`;
   },
