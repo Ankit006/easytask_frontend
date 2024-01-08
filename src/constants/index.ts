@@ -4,6 +4,7 @@ export const backendAPI = {
   company: `/company`,
   user: "/user",
   notifications: "/user/notifications",
+  joinCompany: "/user/join-company",
   header: (companyId: string | undefined) => {
     return `${backendAPI.company}/${companyId}/header`;
   },
