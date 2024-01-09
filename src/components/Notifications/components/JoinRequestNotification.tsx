@@ -1,16 +1,49 @@
-import { IJoinRequestNotification } from "@/model";
-import placeholderCompanyImg from "/placeholder-company.svg";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { resizeImage } from "@/lib/utils";
-import { IoIosClose } from "react-icons/io";
+import { useToast } from "@/components/ui/use-toast";
+import { backendAPI } from "@/constants";
 import useRemoveNotfication from "@/hooks/useRemoveNotification";
+import useSecurePage from "@/hooks/useSecurePage";
+import { resizeImage } from "@/lib/utils";
+import { IJoinRequestNotification } from "@/model";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios, { AxiosError } from "axios";
+import { IoIosClose } from "react-icons/io";
+import placeholderCompanyImg from "/placeholder-company.svg";
 interface Props {
     requestNotfication: IJoinRequestNotification;
 }
 
 export default function JoinRequestNotification({ requestNotfication }: Props) {
-
     const mutation = useRemoveNotfication(requestNotfication._id);
+    const { toast } = useToast();
+    const queryClient = useQueryClient()
+    const joinMutation = useMutation<unknown, AxiosError<{ error: string }>>({
+        mutationFn: async () => {
+            const res = await axios
+                .post(backendAPI.joinCompany, {
+                    companyId: requestNotfication.companyDetail.companyId,
+                    notificationId: requestNotfication._id
+                });
+            return res.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["companies"] })
+            queryClient.invalidateQueries({ queryKey: ["notifications"] })
+            toast({
+                title: `You are joined`
+            })
+
+        },
+        onError: () => {
+            toast({
+                variant: "destructive",
+                title: joinMutation.error?.response?.data.error,
+            });
+        },
+
+    });
+
+    useSecurePage({ error: joinMutation.error, isError: joinMutation.isError });
 
     return (
         <div className="w-full ">
@@ -38,10 +71,12 @@ export default function JoinRequestNotification({ requestNotfication }: Props) {
                         {requestNotfication.companyDetail.companyName}
                     </AvatarFallback>
                 </Avatar>
-                <h3 className="capitalize text-sm font-semibold">{requestNotfication.companyDetail.companyName}</h3>
+                <h3 className="capitalize text-sm font-semibold">
+                    {requestNotfication.companyDetail.companyName}
+                </h3>
             </div>
             <div className="flex justify-end">
-                <button className="text-blue-700 text-xs underline">Accept</button>
+                <button className="text-blue-700 text-xs underline" onClick={() => joinMutation.mutate()}>Accept</button>
             </div>
         </div>
     );
