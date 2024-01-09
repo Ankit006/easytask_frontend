@@ -11,6 +11,7 @@ export default function Notifications() {
         <div>
             {data && (
                 <div className="relative w-8 h-8  border border-gray-400 rounded-md bg-gray-50 py-2">
+                    {data.length > 0 && <div className="bg-green-600 w-2 h-2 rounded-full absolute -top-1 -right-1" />}
                     <Popover>
                         <PopoverTrigger>
                             <Center>

@@ -37,12 +37,9 @@ export interface IJoinRequestNotification {
   _id: string;
   type: "JOIN_REQUEST";
   companyDetail: {
+    companyId: string;
     companyLogo: null | ImageType;
     companyName: string;
-  };
-  buttonAction: {
-    accept: string;
-    cancel: string;
   };
   timestamp: string;
 }

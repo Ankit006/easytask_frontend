@@ -11,15 +11,14 @@ import { backendAPI } from "@/constants";
 import { ICompany } from "@/model";
 import { useQuery } from "@tanstack/react-query";
 import axios, { AxiosError, HttpStatusCode } from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { Circles } from "react-loader-spinner";
 import CompanyList from "./components/CompanyList";
 import { CreateCompanyFormDialog } from "./components/CreateCompanyFormDialog";
 import useFetchUser from "@/hooks/useFetchUser";
-import { socket } from "@/lib/utils";
 import CompanyHeader from "./components/CompanyHeader";
-
+import useConnectNotificationSocket from "@/hooks/useConnectNotificationSocket.ts"
 export default function Companies() {
     const [openCompanyFormDialog, setOpenCompanyFormDialog] = useState(false);
     const { isLoading, isError, error, data } = useQuery<ICompany[], AxiosError>({
@@ -32,19 +31,7 @@ export default function Companies() {
 
     const { data: user } = useFetchUser();
 
-    useEffect(() => {
-        if (user) {
-            socket.auth = { userId: user._id };
-            socket.on(`notification`, (args) => {
-                console.log(args)
-            })
-            socket.connect()
-        }
-        return () => {
-            socket.off(`notification`)
-            socket.disconnect()
-        }
-    }, [user])
+    useConnectNotificationSocket(user);
 
     if (isLoading) {
         return (
