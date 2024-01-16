@@ -20,6 +20,9 @@ export const backendAPI = {
   group: (companyId: string | undefined) => {
     return `${backendAPI.company}/${companyId}/group`;
   },
+  removeGroup: (companyId: string | undefined, groupdId: string) => {
+    return `${backendAPI.company}/${companyId}/group/delete/${groupdId}`;
+  },
   removeNotification: (notificationId: string) => {
     return `/user/remove-notifcation?notificationId=${notificationId}`;
   },

@@ -43,3 +43,10 @@ export interface IJoinRequestNotification {
   };
   timestamp: string;
 }
+
+export interface IGroup {
+  _id: string;
+  name: string;
+  companyId: string;
+  members: string[];
+}
