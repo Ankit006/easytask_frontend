@@ -11,6 +11,9 @@ import Dashboard from './screens/Dashboard'
 import ErrorPage from './screens/Error'
 import { Provider } from "react-redux"
 import { store } from './store/store'
+import Members from './screens/Members'
+import MemberDetails from './screens/MemberDetails'
+import Projects from './screens/Projects'
 
 
 
@@ -40,9 +43,23 @@ const router = createBrowserRouter([
     element: <Signup />
   },
   {
-    path: "/dashboard/:companyId/:tab",
+    path: "/dashboard/:companyId",
     element: <Dashboard />,
-    errorElement: <ErrorPage />
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "members",
+        element: <Members />,
+      },
+      {
+        path: "members/:memberId",
+        element: <MemberDetails />
+      },
+      {
+        path: "projects",
+        element: <Projects />
+      }
+    ]
   }
 ])
 

@@ -50,3 +50,7 @@ export interface IGroup {
   companyId: string;
   members: string[];
 }
+
+export interface IMember extends IUser {
+  groupList: IGroup;
+}

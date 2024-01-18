@@ -3,11 +3,9 @@ import { Toaster } from "@/components/ui/toaster";
 import useFetchUser from "@/hooks/useFetchUser";
 import { socket } from "@/lib/utils";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
-import Members from "../Members";
+import { Outlet } from "react-router-dom";
 
 export default function Dashboard() {
-    const { tab } = useParams();
     const { data } = useFetchUser();
     useEffect(() => {
         if (data) {
@@ -25,7 +23,7 @@ export default function Dashboard() {
     return (
         <div>
             <Header />
-            {tab === "members" && <Members />}
+            <Outlet />
             <Toaster />
         </div>
     )

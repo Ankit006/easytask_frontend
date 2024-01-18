@@ -1,9 +1,10 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
+import { resizeImage } from "@/lib/utils";
 import { IUser } from "@/model";
 import placeholderProfileImg from "/placeholder-profile.svg";
-import { resizeImage } from "@/lib/utils";
+import { NavLink } from "react-router-dom";
 
 interface Props {
     user: IUser;
@@ -26,7 +27,11 @@ export default function MemberCard({ user }: Props) {
             <TableCell>{user.email}</TableCell>
             <TableCell>{user.phoneNumber}</TableCell>
             <TableCell>
-                <Button>Details</Button>
+                <NavLink to={`${user._id}`}>
+                    <Button>
+                        Details
+                    </Button>
+                </NavLink>
             </TableCell>
         </TableRow>
     );

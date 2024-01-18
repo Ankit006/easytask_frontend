@@ -16,20 +16,15 @@ import { FaProjectDiagram } from "react-icons/fa";
 import { IoMdChatbubbles } from "react-icons/io";
 import { IoMenuOutline } from "react-icons/io5";
 import { MdDashboard } from "react-icons/md";
-import { useNavigate, useParams } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import Center from "../global/Center";
-import { Toggle } from "../ui/toggle";
 import ProfileMenu from "./components/ProfileMenu";
 import placeholderProfileImg from "/placeholder-profile.svg";
 
-
 export default function Header() {
-    const { companyId, tab } = useParams();
-    const navigate = useNavigate();
-    const { data, isLoading, isError, error } = useFetchMemberInfo()
+    const { data, isLoading, isError, error } = useFetchMemberInfo();
 
-    useSecurePage({ error, isError })
-
+    useSecurePage({ error, isError });
 
     if (isError) {
         return (
@@ -39,43 +34,34 @@ export default function Header() {
         );
     }
 
-    function onNavPressend(tab: string) {
-        navigate(`/dashboard/${companyId}/${tab}`);
-    }
-
     return (
         <div className=" py-4 border-b border-gray-300">
             <div className="container mx-auto flex items-center justify-between">
-                <nav className="md:block hidden">
-                    <ul className="text-sm text-gray-600 flex items-center space-x-4">
-                        <li>
-                            <Toggle
-                                pressed={tab === "members"}
-                                onPressedChange={() => onNavPressend("members")}
-                                className="data-[state=on]:bg-violet-200 data-[state=on]:text-violet-700"
-                            >
-                                Members
-                            </Toggle>
-                        </li>
-                        <li>
-                            <Toggle
-                                pressed={tab === "projects"}
-                                onPressedChange={() => onNavPressend("projects")}
-                                className="data-[state=on]:bg-violet-200 data-[state=on]:text-violet-700"
-                            >
-                                Projects
-                            </Toggle>
-                        </li>
-                        <li>
-                            <Toggle
-                                pressed={tab === "chats"}
-                                onPressedChange={() => onNavPressend("chats")}
-                                className="data-[state=on]:bg-violet-200 data-[state=on]:text-violet-700"
-                            >
-                                Chats
-                            </Toggle>
-                        </li>
-                    </ul>
+                <nav className="md:block flex items-center space-x-6 text-sm">
+                    <NavLink
+                        to={"members"}
+                        className={({ isActive }) =>
+                            `${isActive ? " text-violet-700 font-semibold" : "text-gray-800"} `
+                        }
+                    >
+                        Members
+                    </NavLink>
+                    <NavLink
+                        to={"projects"}
+                        className={({ isActive }) =>
+                            `${isActive ? " text-violet-700 font-semibold" : "text-gray-800"}`
+                        }
+                    >
+                        Projects
+                    </NavLink>
+                    <NavLink
+                        to={"chats"}
+                        className={({ isActive }) =>
+                            `${isActive ? " text-violet-700 font-semibold" : "text-gray-800"}`
+                        }
+                    >
+                        Chats
+                    </NavLink>
                 </nav>
                 <div className="md:hidden block">
                     <Sheet>
