@@ -52,5 +52,5 @@ export interface IGroup {
 }
 
 export interface IMember extends IUser {
-  groupList: IGroup;
+  groupList: IGroup[];
 }

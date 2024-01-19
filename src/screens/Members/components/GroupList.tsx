@@ -1,10 +1,10 @@
+import GroupCard from "@/components/GroupCard";
 import { backendAPI } from "@/constants";
 import useSecurePage from "@/hooks/useSecurePage";
 import { IGroup } from "@/model";
 import { useQuery } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { useParams } from "react-router-dom";
-import GroupCard from "./GroupCard";
 
 export default function GroupList() {
     const { companyId } = useParams();
@@ -17,10 +17,10 @@ export default function GroupList() {
         queryFn: () =>
             axios.get(backendAPI.group(companyId)).then((res) => res.data),
         enabled: !!companyId,
-        staleTime: Infinity
+        staleTime: Infinity,
     });
 
-    useSecurePage({ isError, error })
+    useSecurePage({ isError, error });
     if (isError) {
         return (
             <p className="text-center mt-4 text-red-600">
@@ -36,7 +36,12 @@ export default function GroupList() {
                     {data.length > 0 ? (
                         <div className="flex items-center flex-wrap space-x-2 space-y-2">
                             {data.map((group) => (
-                                <GroupCard group={group} key={group._id} />
+                                <GroupCard
+                                    companyId={companyId}
+                                    removeGroupApi={backendAPI.removeGroup(companyId, group._id)}
+                                    group={group}
+                                    key={group._id}
+                                />
                             ))}
                         </div>
                     ) : (

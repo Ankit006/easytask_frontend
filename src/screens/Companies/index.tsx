@@ -19,9 +19,10 @@ import { CreateCompanyFormDialog } from "./components/CreateCompanyFormDialog";
 import useFetchUser from "@/hooks/useFetchUser";
 import CompanyHeader from "./components/CompanyHeader";
 import useConnectNotificationSocket from "@/hooks/useConnectNotificationSocket.ts"
+import useSecurePage from "@/hooks/useSecurePage";
 export default function Companies() {
     const [openCompanyFormDialog, setOpenCompanyFormDialog] = useState(false);
-    const { isLoading, isError, error, data } = useQuery<ICompany[], AxiosError>({
+    const { isLoading, isError, error, data } = useQuery<ICompany[], AxiosError<{ error: string }>>({
         queryKey: ["companies"],
         queryFn: async () => {
             const res = await axios.get(backendAPI.company);
@@ -29,6 +30,7 @@ export default function Companies() {
         },
     });
 
+    useSecurePage({ isError, error })
     const { data: user } = useFetchUser();
 
     useConnectNotificationSocket(user);
