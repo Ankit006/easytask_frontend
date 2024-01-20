@@ -51,6 +51,4 @@ export interface IGroup {
   members: string[];
 }
 
-export interface IMember extends IUser {
-  groupList: IGroup[];
-}
+export interface IMember extends IUser {}

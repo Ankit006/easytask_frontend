@@ -20,6 +20,12 @@ export const backendAPI = {
   memberData: (companyId: string | undefined, memberId: string | undefined) => {
     return `${backendAPI.company}/${companyId}/member/${memberId}`;
   },
+  memberGroupList: (
+    companyId: string | undefined,
+    memberId: string | undefined
+  ) => {
+    return `${backendAPI.company}/${companyId}/group/member/${memberId}`;
+  },
   group: (companyId: string | undefined) => {
     return `${backendAPI.company}/${companyId}/group`;
   },

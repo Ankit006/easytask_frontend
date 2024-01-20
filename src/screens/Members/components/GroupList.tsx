@@ -1,26 +1,11 @@
-import { backendAPI } from "@/constants";
-import useSecurePage from "@/hooks/useSecurePage";
-import { IGroup } from "@/model";
-import { useQuery } from "@tanstack/react-query";
-import axios, { AxiosError } from "axios";
+import useFetchGroups from "@/hooks/useFetchGroups";
 import { useParams } from "react-router-dom";
 import GroupCard from "./GroupCard";
 
 export default function GroupList() {
     const { companyId } = useParams();
 
-    const { data, isError, error } = useQuery<
-        IGroup[],
-        AxiosError<{ error: string }>
-    >({
-        queryKey: ["groups", companyId],
-        queryFn: () =>
-            axios.get(backendAPI.group(companyId)).then((res) => res.data),
-        enabled: !!companyId,
-        staleTime: Infinity,
-    });
-
-    useSecurePage({ isError, error });
+    const { data, isError, error } = useFetchGroups({ companyId })
     if (isError) {
         return (
             <p className="text-center mt-4 text-red-600">
