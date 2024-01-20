@@ -1,10 +1,10 @@
-import GroupCard from "@/components/GroupCard";
 import { backendAPI } from "@/constants";
 import useSecurePage from "@/hooks/useSecurePage";
 import { IGroup } from "@/model";
 import { useQuery } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { useParams } from "react-router-dom";
+import GroupCard from "./GroupCard";
 
 export default function GroupList() {
     const { companyId } = useParams();
@@ -38,7 +38,6 @@ export default function GroupList() {
                             {data.map((group) => (
                                 <GroupCard
                                     companyId={companyId}
-                                    removeGroupApi={backendAPI.removeGroup(companyId, group._id)}
                                     group={group}
                                     key={group._id}
                                 />

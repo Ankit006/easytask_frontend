@@ -1,23 +1,24 @@
+import { useToast } from "@/components/ui/use-toast";
+import { backendAPI } from "@/constants";
+import useSecurePage from "@/hooks/useSecurePage";
 import { IGroup } from "@/model";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { IoMdClose } from "react-icons/io";
-import { toast } from "../ui/use-toast";
-import useSecurePage from "@/hooks/useSecurePage";
 
 interface Props {
     group: IGroup;
-    removeGroupApi: string;
-    companyId: string | undefined;
+    companyId: string | undefined// groupKey is for invalidating a query cache onSuccess
 }
 
-export default function GroupCard({ group, removeGroupApi, companyId }: Props) {
+export default function GroupCard({ group, companyId }: Props) {
     const queryClient = useQueryClient();
+    const { toast } = useToast();
 
     const mutation = useMutation<unknown, AxiosError<{ error: string }>>({
-        mutationFn: () => axios.delete(removeGroupApi).then((res) => res.data),
+        mutationFn: () => axios.delete(backendAPI.removeGroup(companyId, group._id)).then((res) => res.data),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["groups", companyId] });
+            queryClient.invalidateQueries({ queryKey: ["groups", companyId] })
         },
 
         onError: () => {

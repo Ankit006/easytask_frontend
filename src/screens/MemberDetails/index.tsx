@@ -58,7 +58,7 @@ export default function MemberDetails() {
                         </div>
                     </div>
                     <div className="mt-8">
-                        <MemberGroups groups={data.groupList} />
+                        <MemberGroups memberId={data._id} groups={data.groupList} />
                     </div>
                 </div>
             )}
