@@ -20,7 +20,7 @@ export default function MemberGroupCard({ group, companyId, memberId }: Props) {
         AxiosError<{ error: string }>
     >({
         mutationFn: () =>
-            axios.put(backendAPI.assignMemberToGroup(companyId), {
+            axios.put(backendAPI.removeMemberFromGroup(companyId), {
                 groupId: group._id,
                 memberId,
             }),
@@ -29,10 +29,10 @@ export default function MemberGroupCard({ group, companyId, memberId }: Props) {
                 queryKey: ["groups", companyId, memberId],
             });
         },
-        onError: () => {
+        onError: (err) => {
             toast({
                 variant: "destructive",
-                title: removeGroupMutation.error?.response?.data.error,
+                title: err.response?.data.error,
             });
         },
     });

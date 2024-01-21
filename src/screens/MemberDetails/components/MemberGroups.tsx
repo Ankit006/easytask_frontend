@@ -23,14 +23,16 @@ export default function MemberGroups({ memberId, companyId }: Props) {
 
             <div>
                 {data && data.length > 0 ? (
-                    <div>
+                    <div className="flex flex-wrap items-center space-x-2 ">
                         {data.map((group) => (
-                            <MemberGroupCard
-                                group={group}
-                                companyId={companyId}
-                                memberId={memberId}
-                                key={group._id}
-                            />
+                            <div key={group._id} className="my-2">
+                                <MemberGroupCard
+                                    group={group}
+                                    companyId={companyId}
+                                    memberId={memberId}
+
+                                />
+                            </div>
                         ))}
                     </div>
                 ) : (

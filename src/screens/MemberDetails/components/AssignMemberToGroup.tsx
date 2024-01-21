@@ -45,22 +45,21 @@ export default function AssignMemberToGroup({ companyId, memberId }: Props) {
     });
 
 
-    const mutation = useMutation<{ message: string }, AxiosError<{ error: string }>>({
-        mutationFn: (groupId) => axios.put(backendAPI.assignMemberToGroup(companyId), {
+    const mutation = useMutation<{ message: string }, AxiosError<{ error: string }>, { groupId: string }>({
+        mutationFn: ({ groupId }) => axios.put(backendAPI.assignMemberToGroup(companyId), {
             memberId,
             groupId
         }).then(res => res.data),
-        onSuccess: () => {
+        onSuccess: (res) => {
             queryClinet.invalidateQueries({ queryKey: ["groups", companyId, memberId] })
             toast({
-                title: mutation.data?.message
+                title: res.message
             })
         },
-
-        onError: () => {
+        onError: (error) => {
             toast({
                 variant: "destructive",
-                title: mutation.error?.response?.data.error
+                title: error.response?.data.error
             })
         }
     })
@@ -69,8 +68,7 @@ export default function AssignMemberToGroup({ companyId, memberId }: Props) {
 
 
     function onSubmit(data: z.infer<typeof AssignGroupToMemberFormSchema>) {
-        // TODO: mutate the data
-        console.log(data)
+        mutation.mutate({ groupId: data.groupId });
     }
     return (
         <div>
