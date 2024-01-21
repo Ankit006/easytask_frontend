@@ -13,35 +13,34 @@ import { Button } from "@/components/ui/button";
 import { SignUpFormValidation, SignupValueType } from "@/validation";
 import axios, { AxiosError } from "axios";
 import { backendAPI } from "@/constants";
-import { useMutation } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query";
 import AuthLayout from "@/components/Auth/AuthLayout";
 import { NavLink, useNavigate } from "react-router-dom";
-import { Circles } from "react-loader-spinner"
+import { Circles } from "react-loader-spinner";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function Signup() {
-
-    const { toast } = useToast()
+    const { toast } = useToast();
     const navigate = useNavigate();
 
     const mutation = useMutation({
-        mutationFn: (values: SignupValueType) => {
-            return axios.post(backendAPI.signup, values)
+        mutationFn: (values: FormData) => {
+            return axios.post(backendAPI.signup, values);
         },
         onError: (error: AxiosError) => {
-            const errorMessage = error.response?.data as { error: string }
+            const errorMessage = error.response?.data as { error: string };
             toast({
                 variant: "destructive",
                 title: errorMessage.error,
-            })
+            });
         },
         onSuccess: () => {
             toast({
-                title: "Signup successful"
-            })
-            navigate("/")
-        }
-    })
+                title: "Signup successful",
+            });
+            navigate("/");
+        },
+    });
 
     const form = useForm<SignupValueType>({
         resolver: zodResolver(SignUpFormValidation),
@@ -53,13 +52,21 @@ export default function Signup() {
             phoneNumber: "",
             password: "",
             confirmPassword: "",
+            profilePic: undefined,
         },
     });
 
     function onSubmit(values: SignupValueType) {
-        mutation.mutate(values)
+        const formData = new FormData();
+        formData.append("firstName", values.firstName);
+        formData.append("lastName", values.lastName);
+        formData.append("age", values.age);
+        formData.append("email", values.email);
+        formData.append("phoneNumber", values.phoneNumber);
+        formData.append("password", values.password);
+        values.profilePic && formData.append("file", values.profilePic);
+        mutation.mutate(formData);
     }
-
 
     return (
         <AuthLayout>
@@ -73,44 +80,83 @@ export default function Signup() {
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                     <FormField
                         control={form.control}
-                        name="firstName"
+                        name="profilePic"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>First name</FormLabel>
+                                <FormLabel>Profile image</FormLabel>
                                 <FormControl>
-                                    <Input {...field} />
+                                    <Input
+                                        type="file"
+                                        accept=".jpg, .jpeg, .png, .webp"
+                                        onChange={(e) =>
+                                            field.onChange(
+                                                e.target.files ? e.target.files[0] : undefined
+                                            )
+                                        }
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
-                    <FormField
-                        control={form.control}
-                        name="lastName"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Last name</FormLabel>
-                                <FormControl>
-                                    <Input {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                    <div className="flex items-center space-x-4">
+                        <FormField
+                            control={form.control}
+                            name="firstName"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>First name</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="lastName"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Last name</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
 
-                    <FormField
-                        control={form.control}
-                        name="age"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Age</FormLabel>
-                                <FormControl>
-                                    <Input type="number" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                    <div className="flex space-x-2 items-center">
+                        <FormField
+                            control={form.control}
+                            name="age"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Age</FormLabel>
+                                    <FormControl>
+                                        <Input type="number" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="email"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Email</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+
                     <FormField
                         control={form.control}
                         name="phoneNumber"
@@ -125,19 +171,6 @@ export default function Signup() {
                         )}
                     />
 
-                    <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Email</FormLabel>
-                                <FormControl>
-                                    <Input {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
 
                     <FormField
                         control={form.control}
@@ -166,13 +199,21 @@ export default function Signup() {
                         )}
                     />
 
-                    <Button disabled={mutation.isPending} type="submit" className="w-full">
-                        {mutation.isPending ? <Circles height={20} width={20} color="#FFFFFF" /> : "Submit"}
+                    <Button
+                        disabled={mutation.isPending}
+                        type="submit"
+                        className="w-full"
+                    >
+                        {mutation.isPending ? (
+                            <Circles height={20} width={20} color="#FFFFFF" />
+                        ) : (
+                            "Submit"
+                        )}
                     </Button>
                 </form>
-            </Form >
+            </Form>
             <p className="text-sm mt-4 text-center">
-                Already have an account ? {" "}
+                Already have an account ?{" "}
                 <NavLink to={"/login"} className="text-primary font-semibold">
                     Login
                 </NavLink>

@@ -7,6 +7,13 @@ export const LoginFormSchema = z.object({
 
 export type LoginFromValueType = z.infer<typeof LoginFormSchema>;
 
+const ACCEPTED_IMAGE_TYPE = [
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/webp",
+];
+
 export const SignUpFormValidation = z
     .object({
         firstName: z.string().refine((data) => data !== "", {
@@ -26,6 +33,15 @@ export const SignUpFormValidation = z
             }),
         password: z.string().min(8),
         confirmPassword: z.string(),
+        profilePic: z
+            .instanceof(File)
+            .refine((f) => f.size < 2000000, {
+                message: "Max image size is 2MB",
+            })
+            .refine((f) => ACCEPTED_IMAGE_TYPE.includes(f.type), {
+                message: "Only .jpg, .jpeg, .png and .webp formats are supported.",
+            })
+            .optional()
     })
     .refine((data) => data.password === data.confirmPassword, {
         message: "Password does not match",

@@ -8,15 +8,26 @@ import axios from 'axios'
 import Companies from './screens/Companies'
 import Signup from '@/screens/Auth/Signup'
 import Dashboard from './screens/Dashboard'
+import ErrorPage from './screens/Error'
+import { Provider } from "react-redux"
+import { store } from './store/store'
+import Members from './screens/Members'
+import MemberDetails from './screens/MemberDetails'
+import Projects from './screens/Projects'
+
+
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 20
+      staleTime: 1000 * 20,
     }
   }
 })
 
 axios.defaults.withCredentials = true;
+axios.defaults.baseURL = "http://localhost:5000"
+
 
 const router = createBrowserRouter([
   {
@@ -33,7 +44,22 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard/:companyId",
-    element: <Dashboard />
+    element: <Dashboard />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "members",
+        element: <Members />,
+      },
+      {
+        path: "members/:memberId",
+        element: <MemberDetails />
+      },
+      {
+        path: "projects",
+        element: <Projects />
+      }
+    ]
   }
 ])
 
@@ -42,8 +68,10 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   < React.StrictMode >
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-    </QueryClientProvider>
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
+    </Provider>
   </React.StrictMode >,
 )
