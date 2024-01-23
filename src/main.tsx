@@ -14,6 +14,7 @@ import { store } from './store/store'
 import Members from './screens/Members'
 import MemberDetails from './screens/MemberDetails'
 import Projects from './screens/Projects'
+import ProjectForm from './screens/ProjectForm'
 
 
 
@@ -57,7 +58,11 @@ const router = createBrowserRouter([
       },
       {
         path: "projects",
-        element: <Projects />
+        element: <Projects />,
+      },
+      {
+        path: "projects/create",
+        element: <ProjectForm />
       }
     ]
   }
