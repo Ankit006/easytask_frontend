@@ -41,7 +41,7 @@ export const backendAPI = {
   removeNotification: (notificationId: string) => {
     return `/user/remove-notifcation?notificationId=${notificationId}`;
   },
-  createProject: (companyId: string | undefined) => {
+  project: (companyId: string | undefined) => {
     return `${backendAPI.company}/${companyId}/project`;
   },
 };

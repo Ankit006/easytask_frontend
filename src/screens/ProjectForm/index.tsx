@@ -22,7 +22,7 @@ export default function ProjectForm() {
     const navigate = useNavigate()
     const { toast } = useToast()
     const mutation = useMutation<{ message: string }, AxiosError<{ error: string }>, { data: z.infer<typeof createProjectFormSchema> }>({
-        mutationFn: ({ data }) => axios.post(backendAPI.createProject(companyId), data).then(res => res.data),
+        mutationFn: ({ data }) => axios.post(backendAPI.project(companyId), data).then(res => res.data),
         onSuccess: (res) => {
             toast({
                 title: res.message
@@ -61,8 +61,7 @@ export default function ProjectForm() {
         <div className="container mx-auto mt-8">
             <Button variant={"ghost"} className="space-x-2 text-violet-700 mb-8" onClick={() => navigate(-1)}>
                 <IoIosReturnLeft />
-                <span>Return</span>
-            </Button>
+                <span>Return</span>            </Button>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 

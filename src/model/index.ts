@@ -52,3 +52,13 @@ export interface IGroup {
 }
 
 export interface IMember extends IUser {}
+
+export interface IProject {
+  _id: string;
+  name: string;
+  companyId: string;
+  projectDesc: string;
+  projectCost: string;
+  projectDeadLine: string;
+  completed: boolean;
+}
