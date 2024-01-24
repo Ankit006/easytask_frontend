@@ -41,6 +41,9 @@ export const backendAPI = {
   removeNotification: (notificationId: string) => {
     return `/user/remove-notifcation?notificationId=${notificationId}`;
   },
+  createProject: (companyId: string | undefined) => {
+    return `${backendAPI.company}/${companyId}/project`;
+  },
 };
 
 export const backendUrl = "http://localhost:5000";
