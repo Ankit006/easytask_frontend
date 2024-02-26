@@ -3,7 +3,11 @@ import { IProjectListItem } from "../types";
 import { Progress } from "@/components/ui/progress";
 import { MdDateRange } from "react-icons/md";
 import { HiOutlineDotsVertical } from "react-icons/hi";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
 import { NavLink } from "react-router-dom";
 interface Props {
     project: IProjectListItem;
@@ -33,18 +37,17 @@ export default function ProjectCard({ project }: Props) {
                         <HiOutlineDotsVertical />
                     </PopoverTrigger>
                     <PopoverContent align="end" className="w-24 px-1 py-3">
-                        <ul >
+                        <ul>
                             <li className="text-sm text-center text-gray-700 hover:bg-slate-100 transform duration-300 rounded py-1">
-                                <NavLink to={`update/${project._id}`}>
-                                    Update
-                                </NavLink>
+                                <NavLink to={`update/${project._id}`}>Update</NavLink>
                             </li>
-                            <li className="text-sm text-center text-gray-700 hover:bg-slate-100 transform duration-300 rounded py-1">Tasks</li>
+                            <li className="text-sm text-center text-gray-700 hover:bg-slate-100 transform duration-300 rounded py-1">
+                                <NavLink to={`${project._id}/sprints`}> Sprints</NavLink>
+                            </li>
                         </ul>
                     </PopoverContent>
                 </Popover>
             </div>
-
         </div>
     );
 }

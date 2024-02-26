@@ -15,6 +15,7 @@ import Members from './screens/Members'
 import MemberDetails from './screens/MemberDetails'
 import Projects from './screens/Projects'
 import ProjectForm from './screens/ProjectForm'
+import Sprints from './screens/Sprints'
 
 
 
@@ -59,6 +60,10 @@ const router = createBrowserRouter([
       {
         path: "projects",
         element: <Projects />,
+      },
+      {
+        path: "projects/:projectId/sprints",
+        element: <Sprints />
       },
       {
         path: "projects/create",
